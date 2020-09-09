@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"github.com/prometheus/common/log"
 
 	"github.com/nervosnetwork/ckb-sdk-go/rpc"
 	"github.com/nervosnetwork/ckb-sdk-go/types"
@@ -75,6 +76,7 @@ func (c *CellCollector) collectFromBlocks(lockHash types.Hash) (*CollectResult, 
 	var stop bool
 	for {
 		end := start + 100
+		log.Infof("start: %d, end: %d", start, end)
 		if end > header.Number {
 			end = header.Number
 			stop = true
