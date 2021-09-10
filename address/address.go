@@ -23,6 +23,7 @@ const (
 	TypeFull  Type = "Full"
 	TypeShort Type = "Short"
 
+	TYPE_FULL_WITH_BECH32M    = "00"
 	ShortFormat               = "01"
 	FullDataFormat            = "02"
 	FullTypeFormat            = "04"
@@ -143,6 +144,19 @@ func Parse(address string) (*ParsedAddress, error) {
 			HashType: types.HashTypeType,
 			Args:     common.Hex2Bytes(payload[66:]),
 		}
+	} else if strings.HasPrefix(payload, "00") {
+		addressType = TypeFull
+		script = types.Script{
+			CodeHash: types.HexToHash(payload[2:66]),
+			Args:     common.Hex2Bytes(payload[68:]),
+		}
+
+		if payload[66:68] == "01" {
+			script.HashType = types.HashTypeType
+		} else {
+			script.HashType = types.HashTypeData
+		}
+
 	} else {
 		return nil, errors.New("address type error:" + payload[:2])
 	}
